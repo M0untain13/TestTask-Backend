@@ -10,19 +10,25 @@ public class MeetingService
     }
 
     private readonly ICollection<Meeting> _meetings;
-    private Meeting? meetingWithLatestEnd;
 
-    public string AddMeeting(string name, DateTime start, DateTime end, TimeSpan reminderTime)
+    private bool CheckIntersect(DateTime startDate, DateTime endDate) =>
+        _meetings.Any(m => 
+            startDate >= m.StartDate && startDate <= m.EndDate
+            || endDate >= m.StartDate && endDate <= m.EndDate
+            || m.StartDate >= startDate && m.StartDate <= endDate
+            || m.EndDate >= startDate && m.EndDate <= endDate
+            );
+
+    public string AddMeeting(string name, DateTime startDate, DateTime endDate, TimeSpan reminderTime)
     {
-        var meeting = new Meeting(name, start, end, reminderTime);
-        if (meetingWithLatestEnd is null || meeting.StartDate > meetingWithLatestEnd.EndDate)
+        if (CheckIntersect(startDate, endDate))
         {
-            _meetings.Add(meeting);
-            return "Done";
+            return $"Meetings intersect";
         }
         else
         {
-            return $"Start date ({meeting.StartDate}) is earlier than latest end date ({meetingWithLatestEnd.EndDate})";
+            _meetings.Add(new Meeting(name, startDate, endDate, reminderTime));
+            return "Done";
         }
     }
 
@@ -42,10 +48,18 @@ public class MeetingService
             }
             if (startDate is not null)
             {
+                if(CheckIntersect((DateTime)startDate, meeting.EndDate))
+                {
+                    return $"Meetings intersect";
+                }
                 meeting.StartDate = (DateTime)startDate;
             }
             if (endDate is not null)
             {
+                if(CheckIntersect(meeting.StartDate, (DateTime)endDate))
+                {
+                    return $"Meetings intersect";
+                }
                 meeting.EndDate = (DateTime)endDate;
             }
             if (reminderTime is not null)
