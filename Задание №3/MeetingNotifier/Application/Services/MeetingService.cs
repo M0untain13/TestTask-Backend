@@ -11,17 +11,18 @@ public class MeetingService
 
     private readonly ICollection<Meeting> _meetings;
 
-    private bool CheckIntersect(DateTime startDate, DateTime endDate) =>
-        _meetings.Any(m =>
+    private bool CheckIntersect(Guid id, DateTime startDate, DateTime endDate) =>
+        _meetings.Any(m => (
             startDate >= m.StartDate && startDate <= m.EndDate
             || endDate >= m.StartDate && endDate <= m.EndDate
             || m.StartDate >= startDate && m.StartDate <= endDate
             || m.EndDate >= startDate && m.EndDate <= endDate
-            );
+            )
+            && m.Id != id);
 
     public string AddMeeting(string name, DateTime startDate, DateTime endDate, TimeSpan reminderTime)
     {
-        if (CheckIntersect(startDate, endDate))
+        if (CheckIntersect(Guid.Empty, startDate, endDate))
         {
             return $"Meetings intersect";
         }
@@ -35,8 +36,12 @@ public class MeetingService
     public IEnumerable<Meeting> GetMeetings(DateOnly date)
     {
         return _meetings.Where(m =>
-            DateOnly.FromDateTime(m.StartDate).Equals(date)
-            || DateOnly.FromDateTime(m.EndDate).Equals(date));
+            DateOnly.FromDateTime(m.StartDate).Equals(date));
+    }
+
+    public IEnumerable<DateOnly> GetAllStartDates()
+    {
+        return _meetings.Select(m => DateOnly.FromDateTime(m.StartDate));
     }
 
     public string ModifyMeeting(Guid id, string? name = null, DateTime? startDate = null, DateTime? endDate = null, TimeSpan? reminderTime = null)
@@ -50,7 +55,7 @@ public class MeetingService
             }
             if (startDate is not null)
             {
-                if (CheckIntersect((DateTime)startDate, meeting.EndDate))
+                if (CheckIntersect(id, (DateTime)startDate, meeting.EndDate))
                 {
                     return $"Meetings intersect";
                 }
@@ -58,7 +63,7 @@ public class MeetingService
             }
             if (endDate is not null)
             {
-                if (CheckIntersect(meeting.StartDate, (DateTime)endDate))
+                if (CheckIntersect(id, meeting.StartDate, (DateTime)endDate))
                 {
                     return $"Meetings intersect";
                 }
