@@ -1,6 +1,6 @@
-using MeetingNotifier.Models;
+using Application.Models;
 
-namespace MeetingNotifier.Services;
+namespace Application.Services;
 
 public class MeetingService
 {
@@ -12,7 +12,7 @@ public class MeetingService
     private readonly ICollection<Meeting> _meetings;
 
     private bool CheckIntersect(DateTime startDate, DateTime endDate) =>
-        _meetings.Any(m => 
+        _meetings.Any(m =>
             startDate >= m.StartDate && startDate <= m.EndDate
             || endDate >= m.StartDate && endDate <= m.EndDate
             || m.StartDate >= startDate && m.StartDate <= endDate
@@ -34,7 +34,9 @@ public class MeetingService
 
     public IEnumerable<Meeting> GetMeetings(DateOnly date)
     {
-        return _meetings.Where(m => m.StartDate.Date.Equals(date) || m.EndDate.Date.Equals(date));
+        return _meetings.Where(m =>
+            DateOnly.FromDateTime(m.StartDate).Equals(date)
+            || DateOnly.FromDateTime(m.EndDate).Equals(date));
     }
 
     public string ModifyMeeting(Guid id, string? name = null, DateTime? startDate = null, DateTime? endDate = null, TimeSpan? reminderTime = null)
@@ -48,7 +50,7 @@ public class MeetingService
             }
             if (startDate is not null)
             {
-                if(CheckIntersect((DateTime)startDate, meeting.EndDate))
+                if (CheckIntersect((DateTime)startDate, meeting.EndDate))
                 {
                     return $"Meetings intersect";
                 }
@@ -56,7 +58,7 @@ public class MeetingService
             }
             if (endDate is not null)
             {
-                if(CheckIntersect(meeting.StartDate, (DateTime)endDate))
+                if (CheckIntersect(meeting.StartDate, (DateTime)endDate))
                 {
                     return $"Meetings intersect";
                 }

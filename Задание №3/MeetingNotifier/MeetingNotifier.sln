@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingNotifier", "MeetingNotifier.csproj", "{F8EF52DB-374B-4965-8BB2-8D2D27F286AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{CE3899DF-CA13-44B3-A4BD-B9F67EB60D3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{A4BD9F04-A0EB-4006-A85F-8C81F82D3D8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +16,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F8EF52DB-374B-4965-8BB2-8D2D27F286AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8EF52DB-374B-4965-8BB2-8D2D27F286AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8EF52DB-374B-4965-8BB2-8D2D27F286AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8EF52DB-374B-4965-8BB2-8D2D27F286AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE3899DF-CA13-44B3-A4BD-B9F67EB60D3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE3899DF-CA13-44B3-A4BD-B9F67EB60D3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE3899DF-CA13-44B3-A4BD-B9F67EB60D3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE3899DF-CA13-44B3-A4BD-B9F67EB60D3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4BD9F04-A0EB-4006-A85F-8C81F82D3D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4BD9F04-A0EB-4006-A85F-8C81F82D3D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4BD9F04-A0EB-4006-A85F-8C81F82D3D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4BD9F04-A0EB-4006-A85F-8C81F82D3D8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-namespace MeetingNotifier.Models;
+namespace Application.Models;
 
 public class Meeting
 {
