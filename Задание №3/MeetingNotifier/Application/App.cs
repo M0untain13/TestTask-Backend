@@ -1,4 +1,5 @@
 using System.Text;
+using Application.Models;
 using Application.Services;
 
 namespace Application;
@@ -31,10 +32,10 @@ public class App
                         GetHandler();
                         break;
                     case "mod":
-
+                        ModHandler();
                         break;
                     case "del":
-
+                        DelHandler();
                         break;
                     case "help":
                         Console.WriteLine(
@@ -62,7 +63,7 @@ public class App
 
     private void AddHandler()
     {
-        Console.Write("Name :");
+        Console.Write("Name: ");
         var name = Console.ReadLine() ?? "Unnamed";
         Console.WriteLine("Example - 31.12.2024 21:00");
         Console.Write("Start date: ");
@@ -76,54 +77,157 @@ public class App
 
     private void GetHandler()
     {
-        Console.WriteLine("Example - 31.12.2024");
+        var dates = _meetingService.GetAllStartDates().ToArray();
+        var count = dates.Length;
+        if (count > 0)
+        {
+            var sb = new StringBuilder("Meeting dates:");
+            for (var i = 0; i < dates.Count(); i++)
+            {
+                sb.Append($"\n#{i + 1} {dates[i]}");
+            }
+            Console.WriteLine(sb);
+
+            Console.Write("Number: ");
+            var number = Convert.ToInt64(Console.ReadLine() ?? "");
+
+            var selectedDate = dates[number - 1];
+
+            var meetings = _meetingService.GetMeetings(selectedDate).OrderBy(m => m.StartDate);
+            if (meetings.Any())
+            {
+                sb = new StringBuilder($"Meetings on {selectedDate}:");
+                foreach (var meeting in meetings)
+                {
+                    sb.Append($"\n{meeting.Name} ({meeting.StartDate}) - ({meeting.EndDate})");
+                }
+                Console.WriteLine(
+                    "console - output in console\n" +
+                    "file - output in file"
+                );
+                Console.Write("Choice: ");
+                var choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "console":
+                        Console.WriteLine(sb);
+                        break;
+                    case "file":
+                        Console.Write("File name: ");
+                        var fileName = Console.ReadLine();
+                        if (fileName is not null)
+                        {
+                            if (!File.Exists(fileName))
+                            {
+                                using var stream = new FileStream(fileName, FileMode.CreateNew, FileAccess.Write);
+                                stream.Write(Encoding.UTF8.GetBytes(sb.ToString()));
+                                Console.WriteLine("Done");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"File with name {fileName} is already exist");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Name must be not empty");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Unexpected choice");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"List of meetings in date {selectedDate} is empty");
+            }
+        }
+        else
+        {
+            Console.WriteLine("List of meetings is empty");
+        }
+    }
+
+    private void ModHandler()
+    {
         Console.Write("Date: ");
         var date = DateOnly.Parse(Console.ReadLine() ?? "");
-        var meetings = _meetingService.GetMeetings(date);
-        if (meetings.Any())
+        var meetings = _meetingService.GetMeetings(date).OrderBy(m => m.StartDate).ToArray();
+        var count = meetings.Length;
+        if (count > 0)
         {
-            meetings = meetings.OrderBy(m => m.StartDate);
             var sb = new StringBuilder($"Meetings on {date}:");
-            foreach (var meeting in meetings)
+            for (var i = 0; i < count; i++)
             {
-                sb.Append($"\n{meeting.Name} ({meeting.StartDate}) - ({meeting.EndDate})");
+                sb.Append($"\n#{i + 1} {meetings[i].Name} ({meetings[i].StartDate}) - ({meetings[i].EndDate})");
             }
+            Console.WriteLine(sb);
+
+            Console.Write("Number: ");
+            var number = Convert.ToInt64(Console.ReadLine() ?? "");
+
+            var selectedMeeting = meetings[number - 1];
+
             Console.WriteLine(
-                "console - output in console\n" +
-                "file - output in file"
+                "name - change name\n" +
+                "start - change start date\n" +
+                "end - change end date\n" +
+                "reminder - change reminder time"
             );
             Console.Write("Choice: ");
             var choice = Console.ReadLine();
             switch (choice)
             {
-                case "console":
-                    Console.WriteLine(sb);
+                case "name":
+                    Console.Write("New name: ");
+                    var name = Console.ReadLine() ?? "Unnamed";
+                    Console.WriteLine(_meetingService.ModifyMeeting(selectedMeeting.Id, name: name));
                     break;
-                case "file":
-                    Console.Write("File name: ");
-                    var fileName = Console.ReadLine();
-                    if (fileName is not null)
-                    {
-                        if(!File.Exists(fileName))
-                        {
-                            using var stream = new FileStream(fileName, FileMode.CreateNew, FileAccess.Write);
-                            stream.Write(Encoding.UTF8.GetBytes(sb.ToString()));
-                            Console.WriteLine("Done");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"File with name {fileName} is already exist");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Name must be not empty");
-                    }
+                case "start":
+                    Console.Write("New start date: ");
+                    var startDate = DateTime.Parse(Console.ReadLine() ?? "");
+                    Console.WriteLine(_meetingService.ModifyMeeting(selectedMeeting.Id, startDate: startDate));
+                    break;
+                case "end":
+                    Console.Write("New end date: ");
+                    var endDate = DateTime.Parse(Console.ReadLine() ?? "");
+                    Console.WriteLine(_meetingService.ModifyMeeting(selectedMeeting.Id, endDate: endDate));
+                    break;
+                case "reminder":
+                    Console.Write("New reminder time: ");
+                    var reminderTime = TimeSpan.FromMinutes(Convert.ToInt64(Console.ReadLine() ?? ""));
+                    Console.WriteLine(_meetingService.ModifyMeeting(selectedMeeting.Id, reminderTime: reminderTime));
                     break;
                 default:
                     Console.WriteLine("Unexpected choice");
                     break;
             }
+        }
+        else
+        {
+            Console.WriteLine("List of meetings is empty");
+        }
+    }
+
+    private void DelHandler()
+    {
+        Console.Write("Date: ");
+        var date = DateOnly.Parse(Console.ReadLine() ?? "");
+        var meetings = _meetingService.GetMeetings(date).OrderBy(m => m.StartDate).ToArray();
+        var count = meetings.Length;
+        if (count > 0)
+        {
+            var sb = new StringBuilder($"Meetings on {date}:");
+            for (var i = 0; i < count; i++)
+            {
+                sb.Append($"\n#{i + 1} {meetings[i].Name} ({meetings[i].StartDate}) - ({meetings[i].EndDate})");
+            }
+            Console.WriteLine(sb);
+            Console.Write("Number: ");
+            var number = Convert.ToInt64(Console.ReadLine() ?? "");
+            var selectedMeeting = meetings[number - 1];
+            Console.WriteLine(_meetingService.DeleteMeeting(selectedMeeting.Id));
         }
         else
         {
