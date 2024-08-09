@@ -15,7 +15,7 @@ public class App
 
     public void Run()
     {
-        Console.WriteLine("Input command \"help\" for list of commands");
+        Console.WriteLine("Input \"help\" for list of commands");
         var isRun = true;
         while (isRun)
         {
@@ -134,6 +134,7 @@ public class App
 
     private void ModHandler()
     {
+        // TODO: изменить
         var selectedDate = SelectDate();
         if (selectedDate is null)
         {

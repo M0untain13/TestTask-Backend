@@ -4,13 +4,16 @@ namespace Application.Services;
 
 public class MeetingService
 {
-    public MeetingService()
-    {
-        _meetings = new List<Meeting>();
-    }
-
+    private readonly NotifyService _notifyService;
     private readonly ICollection<Meeting> _meetings;
 
+    public MeetingService(NotifyService notifyService)
+    {
+        _notifyService = notifyService;
+        _meetings = new List<Meeting>();
+        _notifyService.Run();
+    }
+    
     private bool CheckIntersect(Guid id, DateTime startDate, DateTime endDate) =>
         _meetings.Any(m => (
             startDate >= m.StartDate && startDate <= m.EndDate
@@ -28,7 +31,9 @@ public class MeetingService
         }
         else
         {
-            _meetings.Add(new Meeting(name, startDate, endDate, reminderTime));
+            var meeting = new Meeting(name, startDate, endDate, reminderTime);
+            _meetings.Add(meeting);
+            _notifyService.AddMeeting(meeting);
             return "Done";
         }
     }
@@ -87,6 +92,7 @@ public class MeetingService
         if (meeting is not null)
         {
             _meetings.Remove(meeting);
+            _notifyService.RemoveMeeting(meeting);
             return "Done";
         }
         else
