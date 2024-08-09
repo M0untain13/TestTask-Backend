@@ -1,7 +1,11 @@
+using System.ComponentModel;
+
 namespace Application.Models;
 
-public class Meeting
+public class Meeting : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public Meeting(string name, DateTime start, DateTime end, TimeSpan reminderTime)
     {
         Id = Guid.NewGuid();
@@ -24,7 +28,11 @@ public class Meeting
             var nowDate = DateTime.Now;
             if (value > nowDate)
             {
-                _startDate = value;
+                if(_startDate != value)
+                {
+                    _startDate = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StartDate)));
+                }
             }
             else
             {
@@ -50,6 +58,7 @@ public class Meeting
     }
 
     private TimeSpan _reminderTime;
+
     public TimeSpan ReminderTime 
     { 
         get => _reminderTime;
@@ -58,7 +67,11 @@ public class Meeting
             // TODO: протестить
             if(value.Ticks >= 0)
             {
-                _reminderTime = value;
+                if(_reminderTime != value)
+                {
+                    _reminderTime = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReminderTime)));
+                }
             }
             else
             {
