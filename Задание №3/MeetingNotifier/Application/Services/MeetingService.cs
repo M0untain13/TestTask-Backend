@@ -4,10 +4,10 @@ namespace Application.Services;
 
 public class MeetingService
 {
-    private readonly NotifyService _notifyService;
+    private readonly INotifyService _notifyService;
     private readonly ICollection<Meeting> _meetings;
 
-    public MeetingService(NotifyService notifyService)
+    public MeetingService(INotifyService notifyService)
     {
         _notifyService = notifyService;
         _meetings = new List<Meeting>();

@@ -5,7 +5,7 @@ using Application.Models;
 
 namespace Application.Services;
 
-public class NotifyService
+public class NotifyService : INotifyService
 {
     private readonly LinkedList<Meeting> _meetings;
     private CancellationTokenSource _cancellationTokenSource;

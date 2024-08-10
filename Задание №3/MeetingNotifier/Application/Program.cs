@@ -43,7 +43,7 @@ public class Program
             services
                 .AddSingleton<App>()
                 .AddSingleton<MeetingService>()
-                .AddSingleton<NotifyService>(
+                .AddSingleton<INotifyService>(
                     _ => {
                         return new NotifyService(_pipeName);
                     }
