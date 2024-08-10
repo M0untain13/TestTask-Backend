@@ -1,6 +1,4 @@
 using Application.Services;
-using Microsoft.VisualBasic;
-using Xunit;
 
 namespace Tests;
 
@@ -10,7 +8,7 @@ public class MeetingServiceTest
     // Проверка на правильное добавление встреч
     public void AddTest()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
 
         var messageAboutCreate1 = meetingService.AddMeeting(
             "Name1",
@@ -40,7 +38,7 @@ public class MeetingServiceTest
     // Проверка на правильное получение встреч в определенные дни
     public void GetTest()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
         meetingService.AddMeeting(
             "Name1",
             DateTime.Parse("31.12.3024 23:00"),
@@ -73,7 +71,7 @@ public class MeetingServiceTest
     // Проверка на правильную модификацию встреч
     public void ModifyTest()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
         meetingService.AddMeeting(
             "Name1",
             DateTime.Parse("31.12.3024 23:00"),
@@ -100,7 +98,7 @@ public class MeetingServiceTest
     // Проверка на возникновение ошибки о пересечении встреч при добавлении
     public void IntersectErrorTest1()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
 
         var message1 = meetingService.AddMeeting(
             "Name1",
@@ -123,7 +121,7 @@ public class MeetingServiceTest
     // Проверка на возникновение ошибки о пересечении встреч при добавлении
     public void IntersectErrorTest2()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
 
         var message1 = meetingService.AddMeeting(
             "Name1",
@@ -146,7 +144,7 @@ public class MeetingServiceTest
     // Проверка на возникновение ошибки о пересечении встреч при модицикации
     public void IntersectErrorTest3()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
 
         var messageAboutCreate1 = meetingService.AddMeeting(
             "Name1",
@@ -173,7 +171,7 @@ public class MeetingServiceTest
     // Проверка на правильность удаления встречи
     public void DeleteTest()
     {
-        var meetingService = new MeetingService();
+        var meetingService = new MeetingService(new StubNotifyService());
         meetingService.AddMeeting(
             "Name1",
             DateTime.Parse("01.01.3025 04:00"),
