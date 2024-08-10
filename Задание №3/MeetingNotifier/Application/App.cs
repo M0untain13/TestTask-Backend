@@ -134,7 +134,6 @@ public class App
 
     private void ModHandler()
     {
-        // TODO: изменить
         var selectedDate = SelectDate();
         if (selectedDate is null)
         {

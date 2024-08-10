@@ -64,7 +64,6 @@ public class Meeting : INotifyPropertyChanged
         get => _reminderTime;
         set
         {
-            // TODO: протестить
             if(value.Ticks >= 0)
             {
                 if(_reminderTime != value)
