@@ -105,7 +105,7 @@ public class MeetingServiceTest
             DateTime.Parse("01.01.3025 04:00"),
             DateTime.Parse("01.01.3025 06:00"),
             TimeSpan.FromMinutes(0)
-            );
+        );
         var message2 = meetingService.AddMeeting(
             "Name2",
             DateTime.Parse("01.01.3025 05:00"),
@@ -128,7 +128,7 @@ public class MeetingServiceTest
             DateTime.Parse("01.01.3025 04:00"),
             DateTime.Parse("01.01.3025 07:00"),
             TimeSpan.FromMinutes(0)
-            );
+        );
         var message2 = meetingService.AddMeeting(
             "Name2",
             DateTime.Parse("01.01.3025 04:00"),
@@ -151,7 +151,7 @@ public class MeetingServiceTest
             DateTime.Parse("01.01.3025 04:00"),
             DateTime.Parse("01.01.3025 06:00"),
             TimeSpan.FromMinutes(0)
-            );
+        );
         var messageAboutCreate2 = meetingService.AddMeeting(
             "Name2",
             DateTime.Parse("01.01.3025 07:00"),
@@ -177,7 +177,7 @@ public class MeetingServiceTest
             DateTime.Parse("01.01.3025 04:00"),
             DateTime.Parse("01.01.3025 06:00"),
             TimeSpan.FromMinutes(0)
-            );
+        );
         meetingService.AddMeeting(
             "Name2",
             DateTime.Parse("01.01.3025 07:00"),
@@ -195,5 +195,29 @@ public class MeetingServiceTest
         Assert.Equal(2, countBeforeDelete);
         Assert.Equal("Done", deleteMessage);
         Assert.Equal(1, countAfterDelete);
+    }
+
+    [Fact]
+    // Проверка на ошибку, при добавлении встречи на прошедшую дату
+    public void AddPastError()
+    {
+        var meetingService = new MeetingService(new StubNotifyService());
+
+        var messageAboutCreate1 = meetingService.AddMeeting(
+            "Name1",
+            DateTime.Parse("01.01.3025 04:00"),
+            DateTime.Parse("01.01.3025 06:00"),
+            TimeSpan.FromMinutes(0)
+        );
+
+        Assert.Equal("Done", messageAboutCreate1);
+        Assert.Throws<ArgumentException>(() => 
+            meetingService.AddMeeting(
+                "Name2",
+                DateTime.Parse("01.01.1025 07:00"),
+                DateTime.Parse("01.01.1025 09:00"),
+                TimeSpan.FromMinutes(0)
+            )
+        );
     }
 }
