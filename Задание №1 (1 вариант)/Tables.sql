@@ -1,4 +1,4 @@
-// PostgreSQL syntax
+-- PostgreSQL syntax
 
 create table Courses (
     ID int,
