@@ -10,28 +10,28 @@ public class MeetingServiceTest
     {
         var meetingService = new MeetingService(new StubNotifyService());
 
-        var messageAboutCreate1 = meetingService.AddMeeting(
+        var createMessage1 = meetingService.AddMeeting(
             "Name1",
             DateTime.Parse("31.12.3024 23:00"),
             DateTime.Parse("01.01.3025 06:00"),
             TimeSpan.FromMinutes(0)
         );
-        var messageAboutCreate2 = meetingService.AddMeeting(
+        var createMessage2 = meetingService.AddMeeting(
             "Name2",
             DateTime.Parse("31.12.3024 10:00"),
             DateTime.Parse("31.12.3024 22:00"),
             TimeSpan.FromMinutes(0)
         );
-        var messageAboutCreate3 = meetingService.AddMeeting(
+        var createMessage3 = meetingService.AddMeeting(
             "Name3",
             DateTime.Parse("25.12.3024 16:00"),
             DateTime.Parse("25.12.3024 18:00"),
             TimeSpan.FromMinutes(0)
         );
 
-        Assert.Equal("Done", messageAboutCreate1);
-        Assert.Equal("Done", messageAboutCreate2);
-        Assert.Equal("Done", messageAboutCreate3);
+        Assert.Equal("Done", createMessage1);
+        Assert.Equal("Done", createMessage2);
+        Assert.Equal("Done", createMessage3);
     }
 
     [Fact]
@@ -84,10 +84,10 @@ public class MeetingServiceTest
         var newReminderTime = TimeSpan.FromMinutes(30);
 
         var meeting = meetingService.GetMeetings(DateOnly.Parse("31.12.3024")).First();
-        var messageAboutMod1 = meetingService.ModifyMeeting(meeting.Id, newName, newStartDate, newEndDate, newReminderTime);
+        var modifyMessage = meetingService.ModifyMeeting(meeting.Id, newName, newStartDate, newEndDate, newReminderTime);
         meeting = meetingService.GetMeetings(DateOnly.Parse("01.01.3025")).First();
 
-        Assert.Equal("Done", messageAboutMod1);
+        Assert.Equal("Done", modifyMessage);
         Assert.Equal(newName, meeting.Name);
         Assert.Equal(newStartDate, meeting.StartDate);
         Assert.Equal(newEndDate, meeting.EndDate);
@@ -146,13 +146,13 @@ public class MeetingServiceTest
     {
         var meetingService = new MeetingService(new StubNotifyService());
 
-        var messageAboutCreate1 = meetingService.AddMeeting(
+        var createMessage = meetingService.AddMeeting(
             "Name1",
             DateTime.Parse("01.01.3025 04:00"),
             DateTime.Parse("01.01.3025 06:00"),
             TimeSpan.FromMinutes(0)
         );
-        var messageAboutCreate2 = meetingService.AddMeeting(
+        var createMessage2 = meetingService.AddMeeting(
             "Name2",
             DateTime.Parse("01.01.3025 07:00"),
             DateTime.Parse("01.01.3025 09:00"),
@@ -160,11 +160,11 @@ public class MeetingServiceTest
         );
         var meetings = meetingService.GetMeetings(DateOnly.Parse("01.01.3025"));
         var meeting1 = meetings.OrderBy(m => m.StartDate).First();
-        var messageAboutModify = meetingService.ModifyMeeting(meeting1.Id, endDate: DateTime.Parse("01.01.3025 08:00"));
+        var modifyMessage = meetingService.ModifyMeeting(meeting1.Id, endDate: DateTime.Parse("01.01.3025 08:00"));
 
-        Assert.Equal("Done", messageAboutCreate1);
-        Assert.Equal("Done", messageAboutCreate2);
-        Assert.NotEqual("Done", messageAboutModify);
+        Assert.Equal("Done", createMessage);
+        Assert.Equal("Done", createMessage2);
+        Assert.NotEqual("Done", modifyMessage);
     }
 
     [Fact]
@@ -203,14 +203,14 @@ public class MeetingServiceTest
     {
         var meetingService = new MeetingService(new StubNotifyService());
 
-        var messageAboutCreate1 = meetingService.AddMeeting(
+        var createMessage = meetingService.AddMeeting(
             "Name1",
             DateTime.Parse("01.01.3025 04:00"),
             DateTime.Parse("01.01.3025 06:00"),
             TimeSpan.FromMinutes(0)
         );
 
-        Assert.Equal("Done", messageAboutCreate1);
+        Assert.Equal("Done", createMessage);
         Assert.Throws<ArgumentException>(() => 
             meetingService.AddMeeting(
                 "Name2",
